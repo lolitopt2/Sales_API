@@ -1,0 +1,30 @@
+meta {
+  name: Login User
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "user@salesmanagement.com",
+    "password": "User@123"
+  }
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("user token received", function() {
+    const data = res.getBody();
+    expect(data.token).to.be.a('string');
+    bru.setEnvVar("jwtToken", data.token);
+  });
+}

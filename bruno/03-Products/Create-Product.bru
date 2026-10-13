@@ -1,0 +1,33 @@
+meta {
+  name: Create Product (Admin)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/products
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwtToken}}
+}
+
+body:json {
+  {
+    "name": "Cloud Load Balancer Add-on",
+    "description": "Global traffic management and high-availability routing.",
+    "sku": "NET-LB-06",
+    "price": 199.50,
+    "stockQuantity": 80
+  }
+}
+
+tests {
+  test("status is 201", function() {
+    expect(res.getStatus()).to.equal(201);
+    const data = res.getBody();
+    bru.setEnvVar("productId", data.id);
+  });
+}

@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  sales-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sales_management_api
+    restart: always
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DatabaseProvider=PostgreSql
+      - ConnectionStrings__PostgreSqlConnection=Host=postgres-db;Port=5432;Database=salesmanagement_db;Username=postgres;Password=postgres_password_123
+      - JwtSettings__Secret=SalesManagement_Super_Secret_Key_For_Jwt_Token_Signing_2026_Enterprise!
+      - JwtSettings__Issuer=SalesManagementApi
+      - JwtSettings__Audience=SalesManagementApiClients
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: sales_management_postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=salesmanagement_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres_password_123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

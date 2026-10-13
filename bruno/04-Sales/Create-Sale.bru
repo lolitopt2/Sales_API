@@ -1,0 +1,35 @@
+meta {
+  name: Create Sale Order
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/sales
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwtToken}}
+}
+
+body:json {
+  {
+    "customerId": "{{customerId}}",
+    "items": [
+      {
+        "productId": "{{productId}}",
+        "quantity": 1
+      }
+    ]
+  }
+}
+
+tests {
+  test("status is 201", function() {
+    expect(res.getStatus()).to.equal(201);
+    const data = res.getBody();
+    bru.setEnvVar("saleId", data.id);
+  });
+}

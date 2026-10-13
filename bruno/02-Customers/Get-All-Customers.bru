@@ -1,0 +1,20 @@
+meta {
+  name: Get All Customers
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/customers?pageNumber=1&pageSize=10
+  body: none
+  auth: bearer
+}
+
+params:query {
+  pageNumber: 1
+  pageSize: 10
+}
+
+auth:bearer {
+  token: {{jwtToken}}
+}

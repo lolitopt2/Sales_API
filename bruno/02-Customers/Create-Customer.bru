@@ -1,0 +1,33 @@
+meta {
+  name: Create Customer
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/customers
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwtToken}}
+}
+
+body:json {
+  {
+    "name": "Global Horizon Logística",
+    "email": "contact@globalhorizon.pt",
+    "phone": "+351 915 678 901",
+    "documentNumber": "PT507654321",
+    "address": "Zona Industrial da Maia, Porto"
+  }
+}
+
+tests {
+  test("status is 201", function() {
+    expect(res.getStatus()).to.equal(201);
+    const data = res.getBody();
+    bru.setEnvVar("customerId", data.id);
+  });
+}
